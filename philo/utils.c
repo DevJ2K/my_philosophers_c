@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/07 19:12:24 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/08 19:07:50 by tajavon          ###   ########.fr       */
+/*   Created: 2023/12/08 18:34:22 by tajavon           #+#    #+#             */
+/*   Updated: 2023/12/08 19:08:35 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int argc, char **argv)
+int	ft_error(char *str)
 {
-	if (!valid_args(argc, argv))
-		return (1);
-	printf("ARGC : %d\n", argc);
-	(void)argv;
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	printf("%s%s%s\n", RED, str, RESET);
+	return (1);
 }
