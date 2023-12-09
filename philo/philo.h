@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:40:18 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/08 19:46:23 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/09 11:52:58 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,15 @@
 
 typedef struct s_philo
 {
-	int		id;
-	int		t_die;
-	int		t_eat;
-	int		t_sleep;
-	int		l_fork;
-	int		r_fork;
-	int		eat_times;
-	t_data	*data;
-}			t_philo;
+	int				id;
+	int				t_die;
+	int				t_eat;
+	int				t_sleep;
+	int				l_fork;
+	int				r_fork;
+	int				eat_times;
+	struct s_data	*data;
+}					t_philo;
 
 typedef struct s_data
 {
