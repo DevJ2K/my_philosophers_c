@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:12:24 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/09 20:55:01 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/11 19:05:46 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,6 @@ void	*philo_life(void *philo_param)
 	printf("%s[Philo n.%d] My Turn%s\n", BLUE, philo->id, RESET);
 	printf("Je mange je fais ma vie.\n");
 	pthread_mutex_unlock(&philo->data->print);
-	if (philo->id != philo->data->nb_philo)
-	{
-		while (1)
-			;
-	}
 	return ((void *)0);
 }
 
@@ -49,6 +44,9 @@ int	init_philo(t_data *data)
 		&philo_life, &data->all_philo[i]);
 		i++;
 	}
+	pthread_mutex_lock(&data->print);
+	printf("%sTous les mutex sont initialisees !\n%s", GREEN, RESET);
+	pthread_mutex_unlock(&data->print);
 	return (0);
 }
 
