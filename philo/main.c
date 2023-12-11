@@ -6,11 +6,13 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:12:24 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/11 19:05:46 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/11 19:54:26 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+
 
 void	*philo_life(void *philo_param)
 {
@@ -68,6 +70,15 @@ void	init_data(t_data *data, char **args, int argc)
 
 void	free_data(t_data *data)
 {
+	int	i;
+
+	i = 0;
+	while (i < data->nb_philo)
+	{
+		pthread_mutex_destroy(&data->all_philo[i].l_fork);
+		pthread_detach(data->all_philo[i].thread);
+		i++;
+	}
 	pthread_mutex_destroy(&data->print);
 	pthread_mutex_destroy(&data->dead);
 	free(data->all_philo);
@@ -81,6 +92,6 @@ int	main(int argc, char **argv)
 		return (1);
 	init_data(&data, &argv[1], argc);
 	free_data(&data);
-	printf("ARGC : %d\n", argc);
+	// printf("ARGC : %d\n", argc);
 	(void)argv;
 }
