@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:40:18 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/09 19:24:11 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/13 18:12:13 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 # define PHILO_H
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <unistd.h>
 # include <pthread.h>
+# include <sys/time.h>
 # define RED "\033[31m"
 # define BLUE "\033[34m"
 # define GREEN "\033[32m"
@@ -27,7 +29,7 @@
 typedef struct s_philo
 {
 	int				id;
-	int				eat_times;
+	int				eat_count;
 	pthread_t		thread;
 	pthread_mutex_t	l_fork;
 	pthread_mutex_t	*r_fork;
@@ -42,6 +44,7 @@ typedef struct s_data
 	int				t_sleep;
 	int				must_eat;
 	int				*forks;
+	long int		t_start;
 	pthread_mutex_t	print;
 	pthread_mutex_t	dead;
 	t_philo			*all_philo;

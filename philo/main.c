@@ -6,13 +6,19 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:12:24 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/13 10:26:59 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/13 18:27:23 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+static void	timestamp(void)
+{
+	struct timeval		tv;
 
+	gettimeofday(&tv, NULL);
+	printf("%ld -> ", tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
 
 void	*philo_life(void *philo_param)
 {
@@ -21,6 +27,7 @@ void	*philo_life(void *philo_param)
 	philo = (t_philo *)philo_param;
 	pthread_mutex_lock(&philo->data->print);
 	printf("%s[Philo n.%d] My Turn%s\n", BLUE, philo->id, RESET);
+	timestamp();
 	printf("Je mange je fais ma vie.\n");
 	pthread_mutex_unlock(&philo->data->print);
 	return ((void *)0);
@@ -34,7 +41,7 @@ int	init_philo(t_data *data)
 	while (i < data->nb_philo)
 	{
 		data->all_philo[i].data = data;
-		data->all_philo[i].eat_times = 0;
+		data->all_philo[i].eat_count = 0;
 		data->all_philo[i].r_fork = NULL;
 		data->all_philo[i].id = i + 1;
 		pthread_mutex_init(&data->all_philo[i].l_fork, NULL);
@@ -45,7 +52,7 @@ int	init_philo(t_data *data)
 		if (pthread_create(&data->all_philo[i].thread, NULL, \
 		&philo_life, &data->all_philo[i]) != 0)
 			return (-1);
-		usleep(50);
+		usleep(10);
 		i++;
 	}
 	usleep(50);
@@ -68,9 +75,14 @@ void	init_data(t_data *data, char **args, int argc)
 		data->must_eat = ft_atoi(args[4]);
 	pthread_mutex_init(&data->print, NULL);
 	pthread_mutex_init(&data->dead, NULL);
+	data->forks = malloc(sizeof(int) * data->nb_philo);
+	if (!data->forks)
+		return ;
+	data->forks = memset(data->forks, 1, data->nb_philo * sizeof(int));
+	printf("\n");
 	data->all_philo = malloc(sizeof(t_philo) * data->nb_philo);
 	if (!data->all_philo)
-		return ;
+		return free(data->forks);
 	init_philo(data);
 }
 
