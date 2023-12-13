@@ -29,12 +29,12 @@ OBJS	=	$(SRCS:.c=.o)
 		@echo "$(MAGENTA)Compilation of : $<..$(DEF_COLOR)"
 
 ########################################
-########## RULES
+########## RULES #DEBUG : -fsanitize=thread -g
 
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-				@$(CC) $(OBJS) -o $(NAME)
+				@$(CC) -fsanitize=thread -g $(OBJS) -o $(NAME)
 				@echo "$(GREEN)Success compilation of $(NAME) !$(DEF_COLOR)"
 
 clean:

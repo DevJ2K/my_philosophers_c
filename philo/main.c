@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:12:24 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/11 19:54:26 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/13 10:26:59 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	*philo_life(void *philo_param)
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_param;
+	pthread_mutex_lock(&philo->data->print);
 	printf("%s[Philo n.%d] My Turn%s\n", BLUE, philo->id, RESET);
 	printf("Je mange je fais ma vie.\n");
 	pthread_mutex_unlock(&philo->data->print);
@@ -41,14 +42,19 @@ int	init_philo(t_data *data)
 			data->all_philo[i].r_fork = &data->all_philo[0].l_fork;
 		else
 			data->all_philo[i].r_fork = &data->all_philo[i + 1].l_fork;
-		pthread_mutex_lock(&data->print);
-		pthread_create(&data->all_philo[i].thread, NULL, \
-		&philo_life, &data->all_philo[i]);
+		if (pthread_create(&data->all_philo[i].thread, NULL, \
+		&philo_life, &data->all_philo[i]) != 0)
+			return (-1);
+		usleep(50);
 		i++;
 	}
+	usleep(50);
 	pthread_mutex_lock(&data->print);
 	printf("%sTous les mutex sont initialisees !\n%s", GREEN, RESET);
 	pthread_mutex_unlock(&data->print);
+	i = 0;
+	while (i < data->nb_philo)
+		pthread_join(data->all_philo[i++].thread, NULL);
 	return (0);
 }
 
@@ -75,8 +81,8 @@ void	free_data(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
+
 		pthread_mutex_destroy(&data->all_philo[i].l_fork);
-		pthread_detach(data->all_philo[i].thread);
 		i++;
 	}
 	pthread_mutex_destroy(&data->print);
