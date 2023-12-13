@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:12:24 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/13 18:27:23 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/13 18:38:33 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,6 @@ static void	timestamp(void)
 
 	gettimeofday(&tv, NULL);
 	printf("%ld -> ", tv.tv_sec * 1000 + tv.tv_usec / 1000);
-}
-
-void	*philo_life(void *philo_param)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)philo_param;
-	pthread_mutex_lock(&philo->data->print);
-	printf("%s[Philo n.%d] My Turn%s\n", BLUE, philo->id, RESET);
-	timestamp();
-	printf("Je mange je fais ma vie.\n");
-	pthread_mutex_unlock(&philo->data->print);
-	return ((void *)0);
 }
 
 int	init_philo(t_data *data)
