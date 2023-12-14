@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:34:22 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/09 19:24:06 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:40:46 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,38 @@ int	ft_error(char *str)
 	return (1);
 }
 
-// long long	timestamp(void)
-// {
-// 	struct timeval	tv;
+long int	timestamp(void)
+{
+	struct timeval		tv;
 
-// 	gettimeofday(&tv, NULL);
-// 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-// }
+	gettimeofday(&tv, NULL);
+	// printf("%ld -> ", tv.tv_sec * 1000 + tv.tv_usec / 1000);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
 
-// void	ft_usleep(int ms)
-// {
-// 	long int	time;
+int	ms_sleep(int ms)
+{
+	return (usleep(ms * 1000));
+}
 
-// 	time = timestamp();
-// 	while (timestamp() - time < ms)
-// 		usleep(ms / 10);
-// }
+void	print_action(t_philo *philo, char c)
+{
+	int	id;
+
+	// pthread_mutex_lock(&philo->data->print);
+	id = philo->id;
+	if (c == 'f')
+		printf("%s%ld %d has taken a fork\n%s", YELLOW, timestamp(), id, RESET);
+	else if (c == 'e')
+		printf("%s%ld %d is eating\n%s", RED, timestamp(), id, RESET);
+	else if (c == 's')
+		printf("%s%ld %d is sleeping\n%s", BLUE, timestamp(), id, RESET);
+	else if (c == 'd')
+		printf("%s%ld %d died\n%s", RESET, timestamp(), id, RESET);
+	else if (c == 't')
+		printf("%s%ld %d is thinking\n%s", GREEN, timestamp(), id, RESET);
+	// pthread_mutex_unlock(&philo->data->print);
+}
 
 /// @brief The ft_atoi() function converts the initial portion of the string
 /// pointed to by str to int representation.

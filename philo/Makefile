@@ -20,7 +20,7 @@ WHITE = \033[0;97m
 
 ########################################
 ########## SOURCES
-SRCS	=	main.c utils.c parsing.c
+SRCS	=	main.c utils.c parsing.c philo_life.c
 
 OBJS	=	$(SRCS:.c=.o)
 

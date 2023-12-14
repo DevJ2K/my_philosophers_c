@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:40:18 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/13 18:12:13 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:04:49 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,12 @@ typedef struct s_data
 	t_philo			*all_philo;
 }					t_data;
 
-int		valid_args(int argc, char **argv);
-int		ft_error(char *str);
-int		ft_atoi(const char *str);
+int			valid_args(int argc, char **argv);
+int			ft_error(char *str);
+int			ft_atoi(const char *str);
+long int	timestamp(void);
+void		*philo_life(void *philo_param);
+int			ms_sleep(int ms);
+void		print_action(t_philo *philo, char c);
 
 #endif

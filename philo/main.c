@@ -6,21 +6,13 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:12:24 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/13 18:38:33 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:36:11 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	timestamp(void)
-{
-	struct timeval		tv;
-
-	gettimeofday(&tv, NULL);
-	printf("%ld -> ", tv.tv_sec * 1000 + tv.tv_usec / 1000);
-}
-
-int	init_philo(t_data *data)
+static int	init_philo(t_data *data)
 {
 	int	i;
 
@@ -42,17 +34,17 @@ int	init_philo(t_data *data)
 		usleep(10);
 		i++;
 	}
-	usleep(50);
-	pthread_mutex_lock(&data->print);
-	printf("%sTous les mutex sont initialisees !\n%s", GREEN, RESET);
-	pthread_mutex_unlock(&data->print);
+	// usleep(10000);
+	// pthread_mutex_lock(&data->print);
+	// printf("%sTous les mutex sont initialisees !\n%s", GREEN, RESET);
+	// pthread_mutex_unlock(&data->print);
 	i = 0;
 	while (i < data->nb_philo)
 		pthread_join(data->all_philo[i++].thread, NULL);
 	return (0);
 }
 
-void	init_data(t_data *data, char **args, int argc)
+static void	init_data(t_data *data, char **args, int argc)
 {
 	data->nb_philo = ft_atoi(args[0]);
 	data->t_die = ft_atoi(args[1]);
@@ -66,7 +58,8 @@ void	init_data(t_data *data, char **args, int argc)
 	if (!data->forks)
 		return ;
 	data->forks = memset(data->forks, 1, data->nb_philo * sizeof(int));
-	printf("\n");
+	if (!data->forks)
+		return ;
 	data->all_philo = malloc(sizeof(t_philo) * data->nb_philo);
 	if (!data->all_philo)
 		return free(data->forks);
