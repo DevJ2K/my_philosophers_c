@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 18:38:25 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/14 11:59:55 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/20 17:02:52 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,23 @@ void	p_eat(t_philo *philo)
 	if (data->forks[l_fork_id] && data->forks[philo->id - 1])
 	{
 		// les locks et manger
-		pthread_mutex_lock(&philo->l_fork);
-		pthread_mutex_lock(philo->r_fork);
-		data->forks[l_fork_id] = 0;
-		data->forks[philo->id - 1] = 0;
+		if (philo->id % 2 == 0)
+		{
+			pthread_mutex_lock(&philo->l_fork);
+			pthread_mutex_lock(philo->r_fork);
+			data->forks[l_fork_id] = 0;
+			data->forks[philo->id - 1] = 0;
+		}
+		else
+		{
+			pthread_mutex_lock(philo->r_fork);
+			pthread_mutex_lock(&philo->l_fork);
+			data->forks[l_fork_id] = 0;
+			data->forks[philo->id - 1] = 0;
+		}
 		pthread_mutex_lock(&data->print);
 		print_action(philo, 'f');
 		print_action(philo, 'e');
-		ms_sleep(data->t_eat);
 		pthread_mutex_unlock(&data->print);
 		data->forks[l_fork_id] = 1;
 		data->forks[philo->id - 1] = 1;
