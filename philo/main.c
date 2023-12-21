@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:12:24 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/14 11:36:11 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/21 21:39:54 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,18 @@ static int	init_philo(t_data *data)
 	int	i;
 
 	i = 0;
+	data->t_start = timestamp();
+	while (i < data->nb_philo)
+		pthread_mutex_init(&data->all_philo[i++].l_fork, NULL);
+	i = 0;
 	while (i < data->nb_philo)
 	{
 		data->all_philo[i].data = data;
 		data->all_philo[i].eat_count = 0;
 		data->all_philo[i].r_fork = NULL;
 		data->all_philo[i].id = i + 1;
-		pthread_mutex_init(&data->all_philo[i].l_fork, NULL);
+		// pthread_mutex_init(&data->all_philo[i].l_fork, NULL);
+		data->all_philo[i].last_eat = -1;
 		if (i == data->nb_philo - 1)
 			data->all_philo[i].r_fork = &data->all_philo[0].l_fork;
 		else
@@ -31,13 +36,9 @@ static int	init_philo(t_data *data)
 		if (pthread_create(&data->all_philo[i].thread, NULL, \
 		&philo_life, &data->all_philo[i]) != 0)
 			return (-1);
-		usleep(10);
+		usleep(200);
 		i++;
 	}
-	// usleep(10000);
-	// pthread_mutex_lock(&data->print);
-	// printf("%sTous les mutex sont initialisees !\n%s", GREEN, RESET);
-	// pthread_mutex_unlock(&data->print);
 	i = 0;
 	while (i < data->nb_philo)
 		pthread_join(data->all_philo[i++].thread, NULL);

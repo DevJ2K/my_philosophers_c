@@ -6,81 +6,91 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 18:38:25 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/20 17:02:52 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/21 21:40:05 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+
 void	p_eat(t_philo *philo)
 {
 	t_data	*data;
-	int		l_fork_id;
 
 	data = philo->data;
-	if (philo->id % 2 == 0)
-		ms_sleep(data->t_eat);
-	if (philo->id == 1)
-		l_fork_id = data->nb_philo - 1;
-	else
-		l_fork_id = philo->id - 2;
-	if (data->forks[l_fork_id] && data->forks[philo->id - 1])
+	if (philo->id % 2 != 0)
 	{
-		// les locks et manger
-		if (philo->id % 2 == 0)
-		{
-			pthread_mutex_lock(&philo->l_fork);
-			pthread_mutex_lock(philo->r_fork);
-			data->forks[l_fork_id] = 0;
-			data->forks[philo->id - 1] = 0;
-		}
-		else
-		{
-			pthread_mutex_lock(philo->r_fork);
-			pthread_mutex_lock(&philo->l_fork);
-			data->forks[l_fork_id] = 0;
-			data->forks[philo->id - 1] = 0;
-		}
-		pthread_mutex_lock(&data->print);
+		pthread_mutex_lock(philo->r_fork);
 		print_action(philo, 'f');
-		print_action(philo, 'e');
-		pthread_mutex_unlock(&data->print);
-		data->forks[l_fork_id] = 1;
-		data->forks[philo->id - 1] = 1;
+		pthread_mutex_lock(&philo->l_fork);
+		print_action(philo, 'f');
+	}
+	else
+	{
+		pthread_mutex_lock(&philo->l_fork);
+		print_action(philo, 'f');
+		pthread_mutex_lock(philo->r_fork);
+		print_action(philo, 'f');
+	}
+	print_action(philo, 'e');
+	philo->eat_count++;
+	ms_sleep(philo->data->t_eat);
+	philo->last_eat = timestamp();
+	if (philo->id % 2 != 0)
+	{
+		pthread_mutex_unlock(&philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
+	}
+	else
+	{
 		pthread_mutex_unlock(philo->r_fork);
 		pthread_mutex_unlock(&philo->l_fork);
 	}
-	else
-		return ;
-			// p_think(philo);
-
-	// Exemple id = 2;
-	// Deja faut verifier s'il ne sera pas mort a la fin du repas
-	// Verifier que forks[0] (fourchette de droite) et forks[1] (sa fourchette) == 1;
-	// Si oui, ca lock, ca met les fourchettes indispo et ca mange
-	// Si non, ca attend que les fourchettes soit dispo
-
-	// lock(print)
-	// S'il a reussi a lock, timestamp_in_ms X has taken a fork
-	// Sinon, timestamp_in_ms X is thinking
-
-	// Puis il libere les fourchettes et unlock tous,
-	// Direct apres il doit aller dormir
 }
 
 void	p_sleep(t_philo *philo)
 {
 	(void)philo;
-	// La il doit faire une chose, dodo.
-	// Mais il faut qu'il puisse lock le print
-	// S'il peut il regarde s'il a le temps de dormir et s'il va mourir dans son sommeil
+	t_data	*data;
+
+	data = philo->data;
+	print_action(philo, 's');
+
+	ms_sleep(philo->data->t_sleep);
 }
 
 void	p_think(t_philo *philo)
 {
 	(void)philo;
-	// Cette fonction se declenche a son reveil, s'il a la possibilite de manger il mange
-	// Sinon il reflechit
+	print_action(philo, 't');
+}
+
+void	should_died(t_philo *philo)
+{
+	t_data	*data;
+
+	data = philo->data;
+	if (philo->last_eat != -1)
+	{
+		if (philo->last_eat + data->t_die <
+			philo->last_eat + data->t_eat + data->t_sleep)
+			{
+				print_action(philo, 'd');
+				exit (1);
+			}
+	}
+	else
+	{
+		if (data->t_start + data->t_die <
+			data->t_start + data->t_eat + data->t_sleep)
+			{
+				print_action(philo, 'd');
+				exit (1);
+			}
+	}
+	// data = philo->data;
+	// data->t_die
+	// if ((philo->last_eat + data.) - timestamp())
 }
 
 void	*philo_life(void *philo_param)
@@ -88,11 +98,20 @@ void	*philo_life(void *philo_param)
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_param;
-	p_eat(philo);
-	pthread_mutex_lock(&philo->data->print);
-	printf("%s[Philo n.%d] My Turn%s\n", BLUE, philo->id, RESET);
-	timestamp();
-	printf("Je mange je fais ma vie.\n");
-	pthread_mutex_unlock(&philo->data->print);
+	int i = 0;
+	while (i < 10)
+	{
+		should_died(philo);
+		// pthread_mutex_lock(&philo->data->print);
+		// printf("%s[Philo n.%d] My Turn%s\n", BLUE, philo->id, RESET);
+		// printf("Je mange je fais ma vie.\n");
+		// pthread_mutex_unlock(&philo->data->print);
+		if (i != 0)
+			p_think(philo);
+		p_eat(philo);
+		p_sleep(philo);
+		i++;
+	}
+
 	return ((void *)0);
 }

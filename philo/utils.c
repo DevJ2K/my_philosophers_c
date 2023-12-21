@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:34:22 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/14 11:40:46 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/21 21:37:51 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,21 +39,24 @@ int	ms_sleep(int ms)
 
 void	print_action(t_philo *philo, char c)
 {
-	int	id;
+	int		id;
+	long	spent_time;
 
-	// pthread_mutex_lock(&philo->data->print);
+	// printf("[%ld|%ld]\n", timestamp(), philo->data->t_start);
+	spent_time = timestamp() - philo->data->t_start;
+	pthread_mutex_lock(&philo->data->print);
 	id = philo->id;
 	if (c == 'f')
-		printf("%s%ld %d has taken a fork\n%s", YELLOW, timestamp(), id, RESET);
+		printf("%s%ld %d has taken a fork\n%s", YELLOW, spent_time, id, RESET);
 	else if (c == 'e')
-		printf("%s%ld %d is eating\n%s", RED, timestamp(), id, RESET);
+		printf("%s%ld %d is eating\n%s", RED, spent_time, id, RESET);
 	else if (c == 's')
-		printf("%s%ld %d is sleeping\n%s", BLUE, timestamp(), id, RESET);
+		printf("%s%ld %d is sleeping\n%s", BLUE, spent_time, id, RESET);
 	else if (c == 'd')
-		printf("%s%ld %d died\n%s", RESET, timestamp(), id, RESET);
+		printf("%s%ld %d died\n%s", RESET, spent_time, id, RESET);
 	else if (c == 't')
-		printf("%s%ld %d is thinking\n%s", GREEN, timestamp(), id, RESET);
-	// pthread_mutex_unlock(&philo->data->print);
+		printf("%s%ld %d is thinking\n%s", GREEN, spent_time, id, RESET);
+	pthread_mutex_unlock(&philo->data->print);
 }
 
 /// @brief The ft_atoi() function converts the initial portion of the string

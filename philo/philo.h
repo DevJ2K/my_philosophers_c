@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:40:18 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/14 11:04:49 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/21 21:12:36 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <sys/time.h>
-# define RED "\033[31m"
-# define BLUE "\033[34m"
-# define GREEN "\033[32m"
-# define YELLOW "\033[33m"
-# define ORANGE "\033[38;5;208m"
+# define RED "\033[1;31m"
+# define BLUE "\033[1;34m"
+# define GREEN "\033[1;32m"
+# define YELLOW "\033[1;33m"
+# define ORANGE "\033[1;38;5;208m"
 # define PURPLE "\033[38;5;129m"
 # define RESET "\033[0m"
 
@@ -30,6 +30,7 @@ typedef struct s_philo
 {
 	int				id;
 	int				eat_count;
+	long int		last_eat;
 	pthread_t		thread;
 	pthread_mutex_t	l_fork;
 	pthread_mutex_t	*r_fork;
