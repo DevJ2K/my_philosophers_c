@@ -6,22 +6,11 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:30:57 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/22 12:20:10 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/08 19:06:39 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	ft_error(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	printf("%s%s%s\n", RED, str, RESET);
-	return (1);
-}
 
 static int	only_numbers(char *str)
 {

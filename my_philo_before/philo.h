@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:40:18 by tajavon           #+#    #+#             */
-/*   Updated: 2024/02/01 14:50:42 by tajavon          ###   ########.fr       */
+/*   Updated: 2023/12/21 21:12:36 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +18,13 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <sys/time.h>
-
-# define FRENCH 1
-# define COLORS 1
-
-# if COLORS == 1
-#  define RED "\033[1;31m"
-#  define BLUE "\033[1;34m"
-#  define GREEN "\033[1;32m"
-#  define YELLOW "\033[1;33m"
-#  define CYAN "\033[1;36m"
-#  define WHITE "\033[1;37m"
-#  define ORANGE "\033[1;38;5;208m"
-#  define PURPLE "\033[38;5;129m"
-#  define RESET "\033[0m"
-# else
-#  define RED "\033[0m"
-#  define BLUE "\033[0m"
-#  define GREEN "\033[0m"
-#  define YELLOW "\033[0m"
-#  define CYAN "\033[0m"
-#  define WHITE "\033[0m"
-#  define ORANGE "\033[0m"
-#  define PURPLE "\033[0m"
-#  define RESET "\033[0m"
-# endif
+# define RED "\033[1;31m"
+# define BLUE "\033[1;34m"
+# define GREEN "\033[1;32m"
+# define YELLOW "\033[1;33m"
+# define ORANGE "\033[1;38;5;208m"
+# define PURPLE "\033[38;5;129m"
+# define RESET "\033[0m"
 
 typedef struct s_philo
 {
@@ -62,10 +44,10 @@ typedef struct s_data
 	int				t_eat;
 	int				t_sleep;
 	int				must_eat;
-	int				philo_dead;
+	int				*forks;
 	long int		t_start;
 	pthread_mutex_t	print;
-	pthread_mutex_t	info_die;
+	pthread_mutex_t	dead;
 	t_philo			*all_philo;
 }					t_data;
 
@@ -76,6 +58,5 @@ long int	timestamp(void);
 void		*philo_life(void *philo_param);
 int			ms_sleep(int ms);
 void		print_action(t_philo *philo, char c);
-void		should_died(t_philo *philo);
 
 #endif

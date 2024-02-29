@@ -6,32 +6,48 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 18:38:25 by tajavon           #+#    #+#             */
-/*   Updated: 2023/12/21 21:40:05 by tajavon          ###   ########.fr       */
+/*   Updated: 2024/02/15 14:10:06 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+static int	take_fork(t_philo *philo, t_data *data)
+{
+	if (philo->id % 2 != 0)
+	{
+		pthread_mutex_lock(philo->r_fork);
+		should_died(philo);
+		if (data->philo_dead >= 1)
+		{
+			pthread_mutex_unlock(philo->r_fork);
+			return (0);
+		}
+		print_action(philo, 'f');
+		pthread_mutex_lock(&philo->l_fork);
+		print_action(philo, 'f');
+		return (1);
+	}
+	pthread_mutex_lock(&philo->l_fork);
+	should_died(philo);
+	if (data->philo_dead >= 1)
+	{
+		pthread_mutex_unlock(&philo->l_fork);
+		return (0);
+	}
+	print_action(philo, 'f');
+	pthread_mutex_lock(philo->r_fork);
+	print_action(philo, 'f');
+	return (1);
+}
 
-void	p_eat(t_philo *philo)
+static void	p_eat(t_philo *philo)
 {
 	t_data	*data;
 
 	data = philo->data;
-	if (philo->id % 2 != 0)
-	{
-		pthread_mutex_lock(philo->r_fork);
-		print_action(philo, 'f');
-		pthread_mutex_lock(&philo->l_fork);
-		print_action(philo, 'f');
-	}
-	else
-	{
-		pthread_mutex_lock(&philo->l_fork);
-		print_action(philo, 'f');
-		pthread_mutex_lock(philo->r_fork);
-		print_action(philo, 'f');
-	}
+	if (take_fork(philo, data) == 0)
+		return ;
 	print_action(philo, 'e');
 	philo->eat_count++;
 	ms_sleep(philo->data->t_eat);
@@ -48,70 +64,68 @@ void	p_eat(t_philo *philo)
 	}
 }
 
-void	p_sleep(t_philo *philo)
+static void	p_action(t_philo *philo, char action)
 {
-	(void)philo;
-	t_data	*data;
-
-	data = philo->data;
-	print_action(philo, 's');
-
-	ms_sleep(philo->data->t_sleep);
-}
-
-void	p_think(t_philo *philo)
-{
-	(void)philo;
-	print_action(philo, 't');
+	if (action == 's')
+	{
+		if (philo->data->philo_dead >= 1)
+			return ;
+		print_action(philo, 's');
+		ms_sleep(philo->data->t_sleep);
+	}
+	if (action == 't')
+	{
+		if (philo->data->philo_dead >= 1)
+			return ;
+		print_action(philo, 't');
+	}
+	if (action == 'e')
+		p_eat(philo);
 }
 
 void	should_died(t_philo *philo)
 {
-	t_data	*data;
+	t_data		*data;
+	long int	cur_time;
 
 	data = philo->data;
-	if (philo->last_eat != -1)
+	pthread_mutex_lock(&data->info_die);
+	cur_time = timestamp();
+	if (philo->last_eat + data->t_die < cur_time + data->t_eat)
 	{
-		if (philo->last_eat + data->t_die <
-			philo->last_eat + data->t_eat + data->t_sleep)
-			{
-				print_action(philo, 'd');
-				exit (1);
-			}
+		if (data->philo_dead == 0)
+			print_action(philo, 'd');
+		data->philo_dead++;
+		pthread_mutex_unlock(&data->info_die);
+		return ;
 	}
-	else
-	{
-		if (data->t_start + data->t_die <
-			data->t_start + data->t_eat + data->t_sleep)
-			{
-				print_action(philo, 'd');
-				exit (1);
-			}
-	}
-	// data = philo->data;
-	// data->t_die
-	// if ((philo->last_eat + data.) - timestamp())
+	pthread_mutex_unlock(&data->info_die);
 }
 
 void	*philo_life(void *philo_param)
 {
 	t_philo	*philo;
+	int		i;
 
 	philo = (t_philo *)philo_param;
-	int i = 0;
-	while (i < 10)
+	i = 0;
+	while (1)
 	{
-		should_died(philo);
-		// pthread_mutex_lock(&philo->data->print);
-		// printf("%s[Philo n.%d] My Turn%s\n", BLUE, philo->id, RESET);
-		// printf("Je mange je fais ma vie.\n");
-		// pthread_mutex_unlock(&philo->data->print);
+		if (philo->data->philo_dead >= 1)
+			break ;
+		if (philo->data->nb_philo == 1)
+		{
+			ms_sleep(philo->data->t_die);
+			print_action(philo, 'd');
+			break ;
+		}
+		if (philo->data->must_eat != -1 && i == philo->data->must_eat)
+			break ;
 		if (i != 0)
-			p_think(philo);
-		p_eat(philo);
-		p_sleep(philo);
+			p_action(philo, 't');
+		p_action(philo, 'e');
+		p_action(philo, 's');
 		i++;
 	}
-
 	return ((void *)0);
 }
