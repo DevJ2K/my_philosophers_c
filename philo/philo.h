@@ -6,7 +6,7 @@
 /*   By: tajavon <tajavon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 19:40:18 by tajavon           #+#    #+#             */
-/*   Updated: 2024/02/01 14:50:42 by tajavon          ###   ########.fr       */
+/*   Updated: 2024/08/03 00:43:18 by tajavon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-# define FRENCH 1
+# define FRENCH 0
 # define COLORS 1
 
 # if COLORS == 1
